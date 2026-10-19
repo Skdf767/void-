@@ -1,0 +1,10 @@
+{
+  "parent": "void_ascension:evolve",
+  "display": {
+    "icon": { "item": "void_ascension:void_core" },
+    "title": { "translate": "advancement.void_ascension.ascend.title" },
+    "description": { "translate": "advancement.void_ascension.ascend.description" },
+    "frame": "challenge", "show_toast": true, "announce_to_chat": true
+  },
+  "criteria": { "code": { "trigger": "minecraft:impossible" } }
+}

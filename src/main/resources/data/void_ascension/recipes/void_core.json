@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " F ",
+    "FFF",
+    " F "
+  ],
+  "key": {
+    "F": { "item": "void_ascension:void_fragment" }
+  },
+  "result": { "item": "void_ascension:void_core", "count": 1 }
+}

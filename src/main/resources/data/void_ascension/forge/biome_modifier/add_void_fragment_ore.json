@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "void_ascension:void_fragment_ore",
+  "step": "underground_ores"
+}

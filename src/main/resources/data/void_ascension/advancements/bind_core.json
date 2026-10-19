@@ -1,0 +1,10 @@
+{
+  "parent": "void_ascension:forge_core",
+  "display": {
+    "icon": { "item": "void_ascension:void_core" },
+    "title": { "translate": "advancement.void_ascension.bind_core.title" },
+    "description": { "translate": "advancement.void_ascension.bind_core.description" },
+    "frame": "goal", "show_toast": true, "announce_to_chat": true
+  },
+  "criteria": { "code": { "trigger": "minecraft:impossible" } }
+}
