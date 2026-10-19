@@ -122,6 +122,19 @@ public class CompanionData {
         return recoveryReadyAt > now;
     }
 
+    /**
+     * If recovery cooldown has elapsed, restore health to max and clear recovery flag.
+     * @return true if recovery was completed this tick
+     */
+    public boolean tryCompleteRecovery(long now) {
+        if (recoveryReadyAt != 0 && recoveryReadyAt <= now) {
+            recoveryReadyAt = 0;
+            this.health = this.maxHealth;
+            return true;
+        }
+        return false;
+    }
+
     public long getRecoveryReadyAt() { return recoveryReadyAt; }
     public void setRecoveryReadyAt(long recoveryReadyAt) { this.recoveryReadyAt = recoveryReadyAt; }
 
@@ -132,8 +145,9 @@ public class CompanionData {
     // ------------------------------------------------------------------ XP Curve
     public static long xpForLevel(int targetLevel) {
         if (targetLevel <= 1) return 0L;
-        // Moderate quadratic curve: level 2 requires 50 XP, level 10 requires ~800, level 30 requires ~5000
-        return (long) Math.floor(25.0 * Math.pow(targetLevel - 1, 1.6));
+        double base = com.voidascension.config.VoidConfig.get(com.voidascension.config.VoidConfig.COMPANION_XP_BASE);
+        double exp = com.voidascension.config.VoidConfig.get(com.voidascension.config.VoidConfig.COMPANION_XP_EXPONENT);
+        return (long) Math.floor(base * Math.pow(targetLevel - 1, exp));
     }
 
     public static int levelForXp(long xp) {

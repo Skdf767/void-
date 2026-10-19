@@ -1,5 +1,7 @@
 package com.voidascension.network;
 
+import com.voidascension.companion.CompanionAbility;
+import com.voidascension.companion.CompanionData;
 import com.voidascension.companion.CompanionService;
 import com.voidascension.companion.CompanionSpecies;
 import com.voidascension.data.VoidCapabilities;
@@ -48,10 +50,27 @@ public record CompanionActionPacket(Action action, CompanionSpecies species, int
             CompanionService.ActionResult result = switch (msg.action) {
                 case SELECT -> {
                     Optional<VoidPlayerData> opt = VoidCapabilities.get(player);
-                    opt.ifPresent(d -> {
+                    if (opt.isEmpty() || !opt.get().isInitialized()) {
+                        yield CompanionService.ActionResult.NOT_INITIALIZED;
+                    }
+                    VoidPlayerData d = opt.get();
+                    // Must own at least one unlocked companion to select it; verify species exists and is unlocked
+                    if (d.getCompanion(msg.species) == null || !d.getCompanion(msg.species).isUnlocked()) {
+                        yield CompanionService.ActionResult.LOCKED;
+                    }
+                    // If abilityIndex was piggybacked for ability selection, validate it
+                    if (msg.abilityIndex != 0) {
+                        CompanionData cd = d.getCompanion(msg.species);
+                        if (cd != null && msg.abilityIndex >= 0 && msg.abilityIndex < msg.species.getAbilities().size()) {
+                            CompanionAbility ab = msg.species.getAbilities().get(msg.abilityIndex);
+                            if (cd.isAbilityUnlocked(ab)) {
+                                cd.setSelectedAbilityIndex(msg.abilityIndex);
+                            }
+                        }
+                    } else {
                         d.setSelectedCompanion(msg.species);
-                        VoidNetwork.sync(player);
-                    });
+                    }
+                    VoidNetwork.sync(player);
                     yield CompanionService.ActionResult.SUCCESS;
                 }
                 case TOGGLE_ACTIVE -> CompanionService.toggleActive(player, msg.species);

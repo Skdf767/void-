@@ -69,6 +69,11 @@ public final class CompanionService {
         ServerLevel level = player.serverLevel();
         long now = now(player);
 
+        // Auto-restore companions whose recovery cooldown has elapsed
+        for (CompanionData cd : data.getAllCompanions().values()) {
+            cd.tryCompleteRecovery(now);
+        }
+
         List<CompanionData> activeList = data.getActiveCompanions();
         for (int i = 0; i < activeList.size(); i++) {
             CompanionData cd = activeList.get(i);

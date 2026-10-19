@@ -46,6 +46,7 @@
   "hud.void_ascension.warn.cooldown": "! %s on cooldown (%ss)",
   "hud.void_ascension.warn.locked": "! %s is locked",
   "hud.void_ascension.warn.dormant": "! Activate your Void Core first",
+  "hud.void_ascension.companion_stage": "%s \u00b7 %s",
   "hud.void_ascension.warn.denied": "! %s can't be used right now",
   "tooltip.void_ascension.fragment": "A shard of solidified nothingness.",
   "tooltip.void_ascension.fragment_hint": "Five forge a Void Core. Once your Core is active: right-click to absorb (sneak: whole stack).",

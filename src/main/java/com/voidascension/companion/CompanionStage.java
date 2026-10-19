@@ -1,5 +1,6 @@
 package com.voidascension.companion;
 
+import com.voidascension.config.VoidConfig;
 import com.voidascension.evolution.VoidTier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -48,7 +49,17 @@ public enum CompanionStage {
     public int minLevel() { return minLevel; }
     public int maxLevel() { return maxLevel; }
     public float modelScale() { return modelScale; }
-    public int evolutionEssenceCost() { return evolutionEssenceCost; }
+
+    /** Server-configured essence cost to reach THIS stage from the previous one (0 for Dormant). */
+    public int evolutionEssenceCost() {
+        return switch (this) {
+            case DORMANT -> 0;
+            case AWAKENED -> VoidConfig.get(VoidConfig.COMPANION_EVOLUTION_COST_AWAKENED);
+            case RESONANT -> VoidConfig.get(VoidConfig.COMPANION_EVOLUTION_COST_RESONANT);
+            case ASCENDANT -> VoidConfig.get(VoidConfig.COMPANION_EVOLUTION_COST_ASCENDANT);
+        };
+    }
+
     public VoidTier requiredPlayerTier() { return requiredPlayerTier; }
 
     public String translationKey() {

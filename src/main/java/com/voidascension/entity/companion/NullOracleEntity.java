@@ -1,6 +1,8 @@
 package com.voidascension.entity.companion;
 
 import com.voidascension.companion.CompanionSpecies;
+import com.voidascension.config.VoidConfig;
+import com.voidascension.data.VoidCapabilities;
 import com.voidascension.registry.ModEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -94,11 +96,45 @@ public class NullOracleEntity extends AbstractVoidCompanionEntity {
 
     /**
      * Resonance Link: provides cooldown acceleration and ability efficiency to the owner.
+     * Reduces remaining cooldowns of player active abilities by configured fraction and grants Haste.
      */
     public boolean executeResonanceLink(LivingEntity owner) {
         if (!(this.level() instanceof ServerLevel sl)) return false;
 
+        // Visual + haste buff (tactical efficiency)
         owner.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 240, 1, false, false, true));
+
+        // Actual cooldown acceleration: reduce remaining Dash cooldown and companion ability cooldowns
+        if (owner instanceof net.minecraft.server.level.ServerPlayer sp) {
+            VoidCapabilities.get(sp).ifPresent(data -> {
+                double reduction = VoidConfig.get(VoidConfig.ORACLE_RESONANCE_CD_REDUCTION);
+                long now = sp.server.overworld().getGameTime();
+                // Player ability cooldowns
+                for (String id : new java.util.HashSet<>(data.getCooldowns().keySet())) {
+                    long readyAt = data.getCooldownReadyAt(id);
+                    if (readyAt > now) {
+                        long remaining = readyAt - now;
+                        long reduced = (long) (remaining * (1.0 - reduction));
+                        data.setCooldownReadyAt(id, now + Math.max(1, reduced));
+                    }
+                }
+                // Companion ability cooldowns for all active companions
+                for (com.voidascension.companion.CompanionData cd : data.getAllCompanions().values()) {
+                    if (cd.isUnlocked() && cd.isActive()) {
+                        for (String abilId : new java.util.HashSet<>(cd.getCooldowns().keySet())) {
+                            long rAt = cd.getCooldownReadyAt(abilId);
+                            if (rAt > now) {
+                                long rem = rAt - now;
+                                long red = (long) (rem * (1.0 - reduction));
+                                cd.setCooldownReadyAt(abilId, now + Math.max(1, red));
+                            }
+                        }
+                    }
+                }
+            });
+            // Sync to client for HUD update
+            com.voidascension.network.VoidNetwork.sync(sp);
+        }
 
         sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, owner.getX(), owner.getY() + 1.2D, owner.getZ(),
                 18, 0.4D, 0.4D, 0.4D, 0.05D);

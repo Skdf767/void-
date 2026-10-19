@@ -49,9 +49,9 @@ public final class VoidHudOverlay implements IGuiOverlay {
     @Nullable private ItemStack icon;
     private boolean dormant;
     private Component brand, tierLine, essenceLine, nextLine, reqLine, dashLine, warnLine;
-    private Component compLine, compAbilityLine;
+    private Component compLine, compStageLine, compAbilityLine, compXpLine;
     private int reqColor, dashColor, compAbilityColor;
-    private float xpFrac, evoFrac, compHpFrac;
+    private float xpFrac, evoFrac, compHpFrac, compXpFrac;
     private int panelW, panelH;
 
     private VoidHudOverlay() {}
@@ -116,10 +116,23 @@ public final class VoidHudOverlay implements IGuiOverlay {
             y += LINE;
         }
         if (compLine != null) {
+            // Species + level + stage (e.g. "✦ Abyssal Wisp · Lv 12 [Awakened]")
             g.drawString(font, compLine, x, y, 0xD0B0FF, true);
             y += LINE;
+            if (compStageLine != null) {
+                g.drawString(font, compStageLine, x, y, MUTED, true);
+                y += LINE;
+            }
+            // Health bar
             bar(g, x, y, innerW, 2, compHpFrac, 0xFFFF5555);
             y += 4;
+            // XP bar for companion level progress (spec 11: XP progress)
+            if (compXpLine != null) {
+                g.drawString(font, compXpLine, x, y, SOFT, false);
+                y += LINE - 2;
+                bar(g, x, y, innerW, 2, compXpFrac, 0xFF9D4EDD);
+                y += 4;
+            }
             if (compAbilityLine != null) {
                 g.drawString(font, compAbilityLine, x, y, compAbilityColor, true);
                 y += LINE;
@@ -210,16 +223,34 @@ public final class VoidHudOverlay implements IGuiOverlay {
             dashLine = null;
         }
 
-        // Companion HUD
+        // Companion HUD – spec §11: icon/portrait, species, stage, level, health, XP, ability, cooldown, warnings
         compLine = null;
+        compStageLine = null;
+        compXpLine = null;
         compAbilityLine = null;
         if (VoidConfig.client(VoidConfig.HUD_COMPANION_ENABLED)) {
             CompanionSpecies sel = d.getSelectedCompanion();
             CompanionData cd = sel != null ? d.getCompanion(sel) : null;
             if (cd != null && cd.isUnlocked() && cd.isActive()) {
+                // Stage-aware display: "✦ Abyssal Wisp · Lv 12" + stage line
                 compLine = Component.literal("✦ ").append(cd.getSpecies().displayName())
-                        .append(" · Lv " + cd.getLevel());
+                        .append(Component.literal(" · Lv " + cd.getLevel()).withStyle(cd.getStage().color()));
+                compStageLine = Component.translatable("hud.void_ascension.companion_stage", cd.getStage().displayName(), String.format(Locale.ROOT, "%.0f/%.0f HP", cd.getHealth(), cd.getMaxHealth()));
                 compHpFrac = cd.getHealth() / Math.max(1.0F, cd.getMaxHealth());
+
+                // XP progress (spec: XP progress)
+                if (cd.getLevel() < 30) {
+                    long nextXp = CompanionData.xpForLevel(cd.getLevel() + 1);
+                    long curXp = cd.getXp();
+                    long prevXp = CompanionData.xpForLevel(cd.getLevel());
+                    long need = Math.max(1, nextXp - prevXp);
+                    long have = Math.max(0, curXp - prevXp);
+                    compXpFrac = Math.min(1.0F, have / (float) need);
+                    compXpLine = Component.literal(String.format(Locale.ROOT, "XP %d/%d", curXp, nextXp));
+                } else {
+                    compXpFrac = 1.0F;
+                    compXpLine = Component.literal("XP MAX");
+                }
 
                 CompanionAbility ab = cd.getSelectedAbility();
                 if (ab != null && cd.isAbilityUnlocked(ab)) {
@@ -237,6 +268,14 @@ public final class VoidHudOverlay implements IGuiOverlay {
                         compAbilityColor = READY;
                     }
                 }
+            } else if (VoidConfig.client(VoidConfig.HUD_COMPANION_ENABLED) && !d.getActiveCompanions().isEmpty()) {
+                // Multi-companion compact fallback: show count if selected not active
+                int active = d.getActiveCompanions().size();
+                int max = d.getMaxActiveCompanions();
+                compLine = Component.literal(String.format(Locale.ROOT, "Companions %d/%d active [B] to cycle", active, max));
+                compStageLine = null;
+                compXpLine = null;
+                compHpFrac = 0;
             }
         }
 
@@ -245,11 +284,20 @@ public final class VoidHudOverlay implements IGuiOverlay {
         if (reqLine != null) textW = Math.max(textW, font.width(reqLine));
         if (dashLine != null) textW = Math.max(textW, font.width(dashLine));
         if (compLine != null) textW = Math.max(textW, font.width(compLine));
+        if (compStageLine != null) textW = Math.max(textW, font.width(compStageLine));
+        if (compXpLine != null) textW = Math.max(textW, font.width(compXpLine));
         if (compAbilityLine != null) textW = Math.max(textW, font.width(compAbilityLine));
         if (warnLine != null) textW = Math.max(textW, font.width(warnLine));
 
         panelW = Math.max(MIN_W, textW + 2 * PAD + 1);
-        int extraCompH = compLine != null ? (LINE + 4 + (compAbilityLine != null ? LINE : 0)) : 0;
+        int extraCompH = 0;
+        if (compLine != null) {
+            extraCompH = LINE; // species + level
+            if (compStageLine != null) extraCompH += LINE;
+            extraCompH += 4; // health bar
+            if (compXpLine != null) extraCompH += LINE + 4; // XP text + bar
+            if (compAbilityLine != null) extraCompH += LINE;
+        }
         panelH = PAD + ICON + 3 + 5 + LINE * 2 + (reqLine != null ? LINE : 0) + 6 + (dashLine != null ? LINE : 0) + extraCompH + PAD - 2;
     }
 

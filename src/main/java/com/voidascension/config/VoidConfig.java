@@ -76,6 +76,9 @@ public final class VoidConfig {
     public static final ForgeConfigSpec.DoubleValue COMPANION_ORBIT_HEIGHT;
     public static final ForgeConfigSpec.IntValue COMPANION_RECOVERY_COOLDOWN_TICKS;
 
+    public static final ForgeConfigSpec.DoubleValue COMPANION_XP_BASE;
+    public static final ForgeConfigSpec.DoubleValue COMPANION_XP_EXPONENT;
+
     public static final ForgeConfigSpec.DoubleValue WISP_SIPHON_BONUS_PERCENT;
     public static final ForgeConfigSpec.DoubleValue WISP_SHIELD_AMOUNT;
     public static final ForgeConfigSpec.DoubleValue WISP_PULSE_DAMAGE;
@@ -83,6 +86,30 @@ public final class VoidConfig {
     public static final ForgeConfigSpec.DoubleValue STALKER_PHASE_DAMAGE;
     public static final ForgeConfigSpec.DoubleValue ORACLE_NULL_FIELD_REDUCTION;
     public static final ForgeConfigSpec.DoubleValue ORACLE_RESONANCE_CD_REDUCTION;
+
+    // Companion ability economy (0.2.0) – all configurable, defaults match spec §9 provisional values
+    public static final ForgeConfigSpec.IntValue ABILITY_RIFT_BOLT_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_RIFT_BOLT_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_MARK_PREY_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_MARK_PREY_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_PHASE_STRIKE_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_PHASE_STRIKE_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_EXECUTION_SURGE_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_EXECUTION_SURGE_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_ABYSS_SHIELD_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_ABYSS_SHIELD_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_THREAT_SENSE_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_THREAT_SENSE_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_ABYSS_PULSE_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_ABYSS_PULSE_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_DISRUPT_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_DISRUPT_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_VOID_SCAN_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_VOID_SCAN_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_NULL_FIELD_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_NULL_FIELD_COOLDOWN;
+    public static final ForgeConfigSpec.IntValue ABILITY_RESONANCE_LINK_COST;
+    public static final ForgeConfigSpec.IntValue ABILITY_RESONANCE_LINK_COOLDOWN;
 
     // ---------------------------------------------------------------- Loot
     public static final ForgeConfigSpec.BooleanValue NATURAL_FRAGMENT_SOURCES;
@@ -224,6 +251,11 @@ public final class VoidConfig {
         COMPANION_RECOVERY_COOLDOWN_TICKS = b.comment("Ticks a defeated companion stays in recovery before returning.")
                 .defineInRange("recoveryCooldownTicks", 600, 20, 72_000);
 
+        COMPANION_XP_BASE = b.comment("Companion XP curve base: XP for companion level L = floor(base * (L-1)^exp).")
+                .defineInRange("companionXpBase", 25.0, 1.0, 10_000.0);
+        COMPANION_XP_EXPONENT = b.comment("Companion XP curve exponent (1.0 = linear, 1.6 = moderate quadratic).")
+                .defineInRange("companionXpExponent", 1.6, 1.0, 4.0);
+
         WISP_SIPHON_BONUS_PERCENT = b.comment("Percent bonus Essence granted by Abyssal Wisp's Void Siphon on eligible kills.")
                 .defineInRange("wispSiphonBonusPercent", 25.0, 0.0, 200.0);
         WISP_SHIELD_AMOUNT = b.comment("Damage absorption granted by Abyssal Wisp's Abyss Shield.")
@@ -240,6 +272,33 @@ public final class VoidConfig {
                 .defineInRange("oracleNullFieldReduction", 0.40, 0.05, 0.85);
         ORACLE_RESONANCE_CD_REDUCTION = b.comment("Cooldown reduction fraction granted by Null Oracle's Resonance Link.")
                 .defineInRange("oracleResonanceCdReduction", 0.35, 0.05, 0.75);
+
+        b.comment("Companion ability costs and cooldowns (server-authoritative; essence consumed only on successful activation).")
+                .push("abilities");
+        ABILITY_RIFT_BOLT_COST = b.defineInRange("riftBoltEssenceCost", 8, 0, 100_000);
+        ABILITY_RIFT_BOLT_COOLDOWN = b.defineInRange("riftBoltCooldownTicks", 60, 1, 72_000);
+        ABILITY_MARK_PREY_COST = b.defineInRange("markPreyEssenceCost", 12, 0, 100_000);
+        ABILITY_MARK_PREY_COOLDOWN = b.defineInRange("markPreyCooldownTicks", 240, 1, 72_000);
+        ABILITY_PHASE_STRIKE_COST = b.defineInRange("phaseStrikeEssenceCost", 18, 0, 100_000);
+        ABILITY_PHASE_STRIKE_COOLDOWN = b.defineInRange("phaseStrikeCooldownTicks", 200, 1, 72_000);
+        ABILITY_EXECUTION_SURGE_COST = b.defineInRange("executionSurgeEssenceCost", 20, 0, 100_000);
+        ABILITY_EXECUTION_SURGE_COOLDOWN = b.defineInRange("executionSurgeCooldownTicks", 300, 1, 72_000);
+        ABILITY_ABYSS_SHIELD_COST = b.defineInRange("abyssShieldEssenceCost", 25, 0, 100_000);
+        ABILITY_ABYSS_SHIELD_COOLDOWN = b.defineInRange("abyssShieldCooldownTicks", 400, 1, 72_000);
+        ABILITY_THREAT_SENSE_COST = b.defineInRange("threatSenseEssenceCost", 10, 0, 100_000);
+        ABILITY_THREAT_SENSE_COOLDOWN = b.defineInRange("threatSenseCooldownTicks", 300, 1, 72_000);
+        ABILITY_ABYSS_PULSE_COST = b.defineInRange("abyssPulseEssenceCost", 15, 0, 100_000);
+        ABILITY_ABYSS_PULSE_COOLDOWN = b.defineInRange("abyssPulseCooldownTicks", 160, 1, 72_000);
+        ABILITY_DISRUPT_COST = b.defineInRange("disruptEssenceCost", 14, 0, 100_000);
+        ABILITY_DISRUPT_COOLDOWN = b.defineInRange("disruptCooldownTicks", 240, 1, 72_000);
+        ABILITY_VOID_SCAN_COST = b.defineInRange("voidScanEssenceCost", 15, 0, 100_000);
+        ABILITY_VOID_SCAN_COOLDOWN = b.defineInRange("voidScanCooldownTicks", 400, 1, 72_000);
+        ABILITY_NULL_FIELD_COST = b.defineInRange("nullFieldEssenceCost", 30, 0, 100_000);
+        ABILITY_NULL_FIELD_COOLDOWN = b.defineInRange("nullFieldCooldownTicks", 500, 1, 72_000);
+        ABILITY_RESONANCE_LINK_COST = b.defineInRange("resonanceLinkEssenceCost", 20, 0, 100_000);
+        ABILITY_RESONANCE_LINK_COOLDOWN = b.defineInRange("resonanceLinkCooldownTicks", 600, 1, 72_000);
+        b.pop();
+
         b.pop();
 
         b.comment("Natural Void Fragment sources (loot modifiers). Ore generation is configured via data pack.").push("loot");

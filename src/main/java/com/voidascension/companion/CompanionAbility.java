@@ -1,5 +1,6 @@
 package com.voidascension.companion;
 
+import com.voidascension.config.VoidConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -20,7 +21,7 @@ public enum CompanionAbility {
 
     // Rift Stalker (Offensive Hunter)
     RIFT_BOLT("rift_bolt", CompanionSpecies.RIFT_STALKER, CompanionStage.DORMANT, true, 8, 60),
-    MARK_PREY("mark_preY", CompanionSpecies.RIFT_STALKER, CompanionStage.AWAKENED, true, 12, 240),
+    MARK_PREY("mark_prey", CompanionSpecies.RIFT_STALKER, CompanionStage.AWAKENED, true, 12, 240),
     PHASE_STRIKE("phase_strike", CompanionSpecies.RIFT_STALKER, CompanionStage.RESONANT, true, 18, 200),
     EXECUTION_SURGE("execution_surge", CompanionSpecies.RIFT_STALKER, CompanionStage.ASCENDANT, true, 20, 300),
 
@@ -51,8 +52,46 @@ public enum CompanionAbility {
     public CompanionSpecies species() { return species; }
     public CompanionStage requiredStage() { return requiredStage; }
     public boolean isActive() { return active; }
-    public int essenceCost() { return defaultEssenceCost; }
-    public int cooldownTicks() { return defaultCooldownTicks; }
+
+    /** Server-authoritative essence cost (configurable, falls back to default before config loads). */
+    public int essenceCost() {
+        return switch (this) {
+            case RIFT_BOLT -> VoidConfig.get(VoidConfig.ABILITY_RIFT_BOLT_COST);
+            case MARK_PREY -> VoidConfig.get(VoidConfig.ABILITY_MARK_PREY_COST);
+            case PHASE_STRIKE -> VoidConfig.get(VoidConfig.ABILITY_PHASE_STRIKE_COST);
+            case EXECUTION_SURGE -> VoidConfig.get(VoidConfig.ABILITY_EXECUTION_SURGE_COST);
+            case ABYSS_SHIELD -> VoidConfig.get(VoidConfig.ABILITY_ABYSS_SHIELD_COST);
+            case THREAT_SENSE -> VoidConfig.get(VoidConfig.ABILITY_THREAT_SENSE_COST);
+            case ABYSS_PULSE -> VoidConfig.get(VoidConfig.ABILITY_ABYSS_PULSE_COST);
+            case DISRUPT -> VoidConfig.get(VoidConfig.ABILITY_DISRUPT_COST);
+            case VOID_SCAN -> VoidConfig.get(VoidConfig.ABILITY_VOID_SCAN_COST);
+            case NULL_FIELD -> VoidConfig.get(VoidConfig.ABILITY_NULL_FIELD_COST);
+            case RESONANCE_LINK -> VoidConfig.get(VoidConfig.ABILITY_RESONANCE_LINK_COST);
+            case VOID_SIPHON -> 0;
+        };
+    }
+
+    /** Server-authoritative cooldown (configurable, falls back to default before config loads). */
+    public int cooldownTicks() {
+        return switch (this) {
+            case RIFT_BOLT -> VoidConfig.get(VoidConfig.ABILITY_RIFT_BOLT_COOLDOWN);
+            case MARK_PREY -> VoidConfig.get(VoidConfig.ABILITY_MARK_PREY_COOLDOWN);
+            case PHASE_STRIKE -> VoidConfig.get(VoidConfig.ABILITY_PHASE_STRIKE_COOLDOWN);
+            case EXECUTION_SURGE -> VoidConfig.get(VoidConfig.ABILITY_EXECUTION_SURGE_COOLDOWN);
+            case ABYSS_SHIELD -> VoidConfig.get(VoidConfig.ABILITY_ABYSS_SHIELD_COOLDOWN);
+            case THREAT_SENSE -> VoidConfig.get(VoidConfig.ABILITY_THREAT_SENSE_COOLDOWN);
+            case ABYSS_PULSE -> VoidConfig.get(VoidConfig.ABILITY_ABYSS_PULSE_COOLDOWN);
+            case DISRUPT -> VoidConfig.get(VoidConfig.ABILITY_DISRUPT_COOLDOWN);
+            case VOID_SCAN -> VoidConfig.get(VoidConfig.ABILITY_VOID_SCAN_COOLDOWN);
+            case NULL_FIELD -> VoidConfig.get(VoidConfig.ABILITY_NULL_FIELD_COOLDOWN);
+            case RESONANCE_LINK -> VoidConfig.get(VoidConfig.ABILITY_RESONANCE_LINK_COOLDOWN);
+            case VOID_SIPHON -> 0;
+        };
+    }
+
+    /** Hardcoded fallback values for docs/tests (server config not loaded there). */
+    public int defaultEssenceCost() { return defaultEssenceCost; }
+    public int defaultCooldownTicks() { return defaultCooldownTicks; }
 
     public String translationKey() {
         return "companion_ability.void_ascension." + id;
