@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": { "layer0": "void_ascension:item/void_core" },
+  "overrides": [
+    { "predicate": { "void_ascension:bound": 1 }, "model": "void_ascension:item/void_core_bound" }
+  ]
+}

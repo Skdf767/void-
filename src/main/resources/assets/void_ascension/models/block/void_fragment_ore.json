@@ -1,0 +1,1 @@
+{ "parent": "minecraft:block/cube_all", "textures": { "all": "void_ascension:block/void_fragment_ore" } }

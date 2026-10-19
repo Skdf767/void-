@@ -1,0 +1,15 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [ { "items": [ "void_ascension:void_fragment" ] } ] }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": { "recipe": "void_ascension:void_core" }
+    }
+  },
+  "requirements": [ [ "has_fragment", "has_the_recipe" ] ],
+  "rewards": { "recipes": [ "void_ascension:void_core" ] }
+}

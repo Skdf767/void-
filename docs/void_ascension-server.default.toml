@@ -1,0 +1,200 @@
+
+#Void Essence: the spendable progression resource.
+[essence]
+	#Essence gained when absorbing one Void Fragment.
+	#Range: 0 ~ 100000
+	fragmentEssence = 25
+	#Kills grant 1 Essence per this many points of the victim's max health (minimum 1).
+	#Range: 0.1 ~ 10000.0
+	healthPerEssence = 5.0
+	#Kill reward multiplier for #void_ascension:void_creatures.
+	#Range: 0.0 ~ 100.0
+	voidCreatureMultiplier = 3.0
+	#Kill reward multiplier inside The End.
+	#Range: 0.0 ~ 100.0
+	endDimensionMultiplier = 2.0
+	#Ticks between passive Essence trickles while in The End (0 disables).
+	#Range: 0 ~ 1000000
+	endPassiveInterval = 600
+	#Essence per passive trickle in The End.
+	#Range: 0 ~ 10000
+	endPassiveAmount = 1
+	#If true, gameplay Essence (kills, fragments, End trickle) is only gained
+	#while carrying your active bound Void Core. Progression itself never depends on the item.
+	requireCarriedCore = true
+	#Upper bound for stored Essence.
+	#Range: > 1
+	maxEssence = 1000000000
+
+#Evolution Level: grows with lifetime Void Experience (1 XP per Essence gained through gameplay).
+#Total XP for level L = floor(xpBase * L ^ xpExponent).
+[level]
+	#Range: 1.0 ~ 100000.0
+	xpBase = 30.0
+	#Range: 1.0 ~ 4.0
+	xpExponent = 1.5
+	#Range: 1 ~ 1000
+	maxLevel = 100
+
+#Void Core binding.
+[core]
+	#Ticks right-click must be held to bind a Core.
+	#Range: 1 ~ 1200
+	bindDurationTicks = 60
+	#Percent of stored Essence lost when transferring your bond to a new Core.
+	#Range: 0 ~ 100
+	rebindPenaltyPercent = 25
+
+#Evolution tiers. HUMAN is the starting tier and has no values.
+[evolution]
+	#If true, evolving requires carrying your active bound Void Core.
+	requireCarriedCore = true
+
+	[evolution.enhanced]
+		#Minimum Evolution Level required to evolve into ENHANCED.
+		#Range: 0 ~ 1000
+		requiredLevel = 3
+		#Void Essence consumed when evolving into ENHANCED.
+		#Range: 0 ~ 1000000000
+		essenceCost = 100
+		#Total extra max health (half-hearts) while at this tier. Not cumulative with lower tiers.
+		#Range: 0.0 ~ 40.0
+		bonusHealth = 2.0
+		#Total movement speed bonus in percent of base speed while at this tier.
+		#Range: 0.0 ~ 50.0
+		bonusSpeedPercent = 5.0
+		#Total flat attack damage bonus while at this tier.
+		#Range: 0.0 ~ 20.0
+		bonusAttackDamage = 0.5
+		#Total armor points while at this tier (a full diamond set is 20).
+		#Range: 0.0 ~ 20.0
+		bonusArmor = 1.0
+		#Total armor toughness while at this tier (a full netherite set is 12).
+		#Range: 0.0 ~ 12.0
+		bonusArmorToughness = 0.0
+		#Total knockback resistance while at this tier (1.0 = immune; netherite set = 0.4).
+		#Range: 0.0 ~ 1.0
+		bonusKnockbackResistance = 0.0
+
+	[evolution.mutant]
+		#Minimum Evolution Level required to evolve into MUTANT.
+		#Range: 0 ~ 1000
+		requiredLevel = 8
+		#Void Essence consumed when evolving into MUTANT.
+		#Range: 0 ~ 1000000000
+		essenceCost = 300
+		#Total extra max health (half-hearts) while at this tier. Not cumulative with lower tiers.
+		#Range: 0.0 ~ 40.0
+		bonusHealth = 4.0
+		#Total movement speed bonus in percent of base speed while at this tier.
+		#Range: 0.0 ~ 50.0
+		bonusSpeedPercent = 8.0
+		#Total flat attack damage bonus while at this tier.
+		#Range: 0.0 ~ 20.0
+		bonusAttackDamage = 1.0
+		#Total armor points while at this tier (a full diamond set is 20).
+		#Range: 0.0 ~ 20.0
+		bonusArmor = 2.0
+		#Total armor toughness while at this tier (a full netherite set is 12).
+		#Range: 0.0 ~ 12.0
+		bonusArmorToughness = 0.0
+		#Total knockback resistance while at this tier (1.0 = immune; netherite set = 0.4).
+		#Range: 0.0 ~ 1.0
+		bonusKnockbackResistance = 0.05
+
+	[evolution.voidborn]
+		#Minimum Evolution Level required to evolve into VOIDBORN.
+		#Range: 0 ~ 1000
+		requiredLevel = 15
+		#Void Essence consumed when evolving into VOIDBORN.
+		#Range: 0 ~ 1000000000
+		essenceCost = 750
+		#Total extra max health (half-hearts) while at this tier. Not cumulative with lower tiers.
+		#Range: 0.0 ~ 40.0
+		bonusHealth = 6.0
+		#Total movement speed bonus in percent of base speed while at this tier.
+		#Range: 0.0 ~ 50.0
+		bonusSpeedPercent = 12.0
+		#Total flat attack damage bonus while at this tier.
+		#Range: 0.0 ~ 20.0
+		bonusAttackDamage = 2.0
+		#Total armor points while at this tier (a full diamond set is 20).
+		#Range: 0.0 ~ 20.0
+		bonusArmor = 4.0
+		#Total armor toughness while at this tier (a full netherite set is 12).
+		#Range: 0.0 ~ 12.0
+		bonusArmorToughness = 1.0
+		#Total knockback resistance while at this tier (1.0 = immune; netherite set = 0.4).
+		#Range: 0.0 ~ 1.0
+		bonusKnockbackResistance = 0.1
+
+	[evolution.ascended]
+		#Minimum Evolution Level required to evolve into ASCENDED.
+		#Range: 0 ~ 1000
+		requiredLevel = 25
+		#Void Essence consumed when evolving into ASCENDED.
+		#Range: 0 ~ 1000000000
+		essenceCost = 1500
+		#Total extra max health (half-hearts) while at this tier. Not cumulative with lower tiers.
+		#Range: 0.0 ~ 40.0
+		bonusHealth = 10.0
+		#Total movement speed bonus in percent of base speed while at this tier.
+		#Range: 0.0 ~ 50.0
+		bonusSpeedPercent = 15.0
+		#Total flat attack damage bonus while at this tier.
+		#Range: 0.0 ~ 20.0
+		bonusAttackDamage = 3.0
+		#Total armor points while at this tier (a full diamond set is 20).
+		#Range: 0.0 ~ 20.0
+		bonusArmor = 6.0
+		#Total armor toughness while at this tier (a full netherite set is 12).
+		#Range: 0.0 ~ 12.0
+		bonusArmorToughness = 2.0
+		#Total knockback resistance while at this tier (1.0 = immune; netherite set = 0.4).
+		#Range: 0.0 ~ 1.0
+		bonusKnockbackResistance = 0.15
+
+#Abilities.
+[abilities]
+
+	[abilities.void_dash]
+		#Range: 0 ~ 100000
+		essenceCost = 10
+		#Range: 1 ~ 72000
+		cooldownTicks = 100
+		#Horizontal launch velocity (blocks/tick). Movement is physics-based and collides with blocks.
+		#Range: 0.1 ~ 3.0
+		strength = 1.4
+		#Upward velocity added by the dash.
+		#Range: 0.0 ~ 1.0
+		lift = 0.2
+
+	[abilities.void_resilience]
+		#Fraction of fall damage negated.
+		#Range: 0.0 ~ 0.9
+		fallDamageReduction = 0.3
+
+	[abilities.void_rescue]
+		#Range: 0 ~ 100000
+		essenceCost = 100
+		#Range: 0 ~ 72000
+		cooldownTicks = 1200
+
+	[abilities.void_ascendance]
+		#Extra fraction of gameplay Essence gained.
+		#Range: 0.0 ~ 1.0
+		essenceGainBonus = 0.25
+
+#Natural Void Fragment sources (loot modifiers). Ore generation is configured via data pack.
+[loot]
+	naturalFragmentSources = true
+	#Multiplies every fragment drop chance (result capped at 100%).
+	#Range: 0.0 ~ 10.0
+	fragmentChanceMultiplier = 1.0
+
+[debug]
+	#Enables /void debug (still requires permission level 2).
+	enableDebugCommands = false
+	#Logs progression changes at INFO level.
+	debugLogging = false
+

@@ -1,0 +1,17 @@
+
+[hud]
+	#Show the permanent Void HUD panel (tier, level, Essence, next evolution, cooldowns).
+	enabled = true
+	#Screen corner the HUD is anchored to.
+	#Allowed Values: TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+	anchor = "BOTTOM_RIGHT"
+	#Horizontal distance (GUI pixels) from the anchored screen edge.
+	#Range: 0 ~ 4000
+	offsetX = 4
+	#Vertical distance (GUI pixels) from the anchored screen edge. When anchored to the bottom and the
+	#panel would overlap the hotbar / health / food bars (narrow windows), it is lifted above them.
+	#Range: 0 ~ 4000
+	offsetY = 4
+	#Before your Void Core is activated, show a small 'Core dormant' hint instead of nothing.
+	showDormantHint = true
+

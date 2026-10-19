@@ -1,0 +1,15 @@
+{
+  "display": {
+    "icon": { "item": "void_ascension:void_fragment" },
+    "title": { "translate": "advancement.void_ascension.root.title" },
+    "description": { "translate": "advancement.void_ascension.root.description" },
+    "background": "minecraft:textures/block/obsidian.png",
+    "frame": "task", "show_toast": true, "announce_to_chat": false
+  },
+  "criteria": {
+    "has_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": { "items": [ { "items": [ "void_ascension:void_fragment" ] } ] }
+    }
+  }
+}

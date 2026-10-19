@@ -1,0 +1,10 @@
+{
+  "type": "void_ascension:add_item",
+  "conditions": [
+    { "condition": "forge:loot_table_id", "loot_table_id": "minecraft:chests/ancient_city" }
+  ],
+  "item": "void_ascension:void_fragment",
+  "chance": 0.35,
+  "min": 1,
+  "max": 2
+}
